@@ -7,7 +7,7 @@ model_seq = ['mmioaepw', 'mmioarepw', 'mdag1epw', 'mdag1repw', 'mdag2epw', 'mdag
              'mmioa', 'mmioapw', 'mmioar', 'mmioarpw',
              'mdag1', 'mdag1pw', 'mdag1r', 'mdag1rpw',
              'mdag2', 'mdag2pw', 'mdag2r', 'mdag2rpw',
-             'mng', 'mngpw', 'mngr', 'mngrpw', 'mhd', 'mr', 'mpmis']
+             'mng', 'mngpw', 'mngr', 'mngrpw', 'mhd', 'mr']
 num_product = 3
 
 for sc_option in sc_option_seq:
