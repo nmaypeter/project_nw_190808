@@ -110,7 +110,8 @@ class SeedSelectionMIOA:
     def updateMIOAEPW(self, mioa_dict):
         mioa_dict = [{i: {j: (round(mioa_dict[k][i][j][0] * self.product_weight_list[k] ** len(mioa_dict[k][i][j][1]), 4), mioa_dict[k][i][j][1])
                           for j in mioa_dict[k][i]} for i in mioa_dict[k]} for k in range(self.num_product)]
-        mioa_dict = [{i: {j: mioa_dict[k][i][j] for j in mioa_dict[k][i] if mioa_dict[k][i][j][0] >= self.prob_threshold} for i in mioa_dict[k]} for k in range(self.num_product)]
+        mioa_dict = [{i: {j: mioa_dict[k][i][j] for j in mioa_dict[k][i] if mioa_dict[k][i][j][0] >= self.prob_threshold} for i in mioa_dict[k]}
+                     for k in range(self.num_product)]
         mioa_dict = [{i: mioa_dict[k][i] for i in mioa_dict[k] if mioa_dict[k][i]} for k in range(self.num_product)]
 
         return mioa_dict
@@ -151,33 +152,29 @@ class SeedSelectionMIOA:
         i_set = set(i for i in self.graph_dict if i in node_rank_dict)
         for i in i_set:
             j_set = set(j for j in self.graph_dict[i] if j in node_rank_dict and node_rank_dict[i] > node_rank_dict[j])
-            for j in j_set:
-                dag_dict[i][j] = self.graph_dict[i][j]
-            if not dag_dict[i]:
-                del dag_dict[i]
+            dag_dict[i] = {j: self.graph_dict[i][j] for j in j_set}
+        dag_dict = {i: dag_dict[i] for i in dag_dict if dag_dict[i]}
 
         return dag_dict
 
-    def generateDAG2(self, s_set_k, mioa_dict):
+    def generateDAG2(self, s_set_k, mioa_dict_k):
         node_rank_dict = {i: 0.0 for i in self.seed_cost_dict[0]}
         for s_node in s_set_k:
             node_rank_dict[s_node] = 1.0
-            for i in mioa_dict[s_node]:
-                if mioa_dict[s_node][i][0] > node_rank_dict[i]:
-                    node_rank_dict[i] = mioa_dict[s_node][i][0]
+            for i in mioa_dict_k[s_node]:
+                if mioa_dict_k[s_node][i][0] > node_rank_dict[i]:
+                    node_rank_dict[i] = mioa_dict_k[s_node][i][0]
 
         dag_dict = {i: {} for i in self.graph_dict}
         for s_node in s_set_k:
-            for i in mioa_dict[s_node]:
-                i_path = [s_node] + mioa_dict[s_node][i][1]
+            for i in mioa_dict_k[s_node]:
+                i_path = [s_node] + mioa_dict_k[s_node][i][1]
                 for len_path in range(len(i_path) - 1):
                     i_node, ii_node = i_path[len_path], i_path[len_path + 1]
                     if ii_node not in dag_dict[i_node] and node_rank_dict[i_node] > node_rank_dict[ii_node]:
                         dag_dict[i_node][ii_node] = self.graph_dict[i_node][ii_node]
 
-        for i in self.graph_dict:
-            if not dag_dict[i]:
-                del dag_dict[i]
+        dag_dict = {i: dag_dict[i] for i in dag_dict if dag_dict[i]}
 
         return dag_dict
 
