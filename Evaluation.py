@@ -10,7 +10,6 @@ class Evaluation:
         ### graph_dict: (dict) the graph
         ### prod_list: (list) the set to record products [kk's profit, kk's cost, kk's price]
         ### num_product: (int) the kinds of products
-        ### wpiwp: (bool) whether passing the information with purchasing
         self.graph_dict = graph_dict
         self.product_list = prod_list
         self.num_product = len(prod_list)
@@ -18,7 +17,7 @@ class Evaluation:
 
     def getSeedSetProfit(self, s_set):
         s_total_set = set(s for k in range(self.num_product) for s in s_set[k])
-        a_n_set = [s_set[k].copy() for k in range(self.num_product)]
+        a_n_set = [s_total_set.copy() for _ in range(self.num_product)]
         a_n_sequence, a_n_sequence2 = [(k, s) for k in range(self.num_product) for s in s_set[k]], []
         pro_k_list = [0.0 for _ in range(self.num_product)]
         wallet_dict = self.wallet_dict.copy()
@@ -32,8 +31,6 @@ class Evaluation:
                     continue
 
                 # -- notice: seed cannot use other product --
-                if ii_node in s_total_set:
-                    continue
                 if ii_node in a_n_set[k_prod]:
                     continue
                 if wallet_dict[ii_node] < price:
