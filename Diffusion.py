@@ -19,7 +19,7 @@ class Diffusion:
         s_total_set = set(s for k in range(self.num_product) for s in s_set[k])
         ep = 0.0
         for k in range(self.num_product):
-            a_n_set = s_set[k].copy()
+            a_n_set = s_total_set.copy()
             a_n_sequence, a_n_sequence2 = [(s, 1) for s in s_set[k]], []
             benefit = self.product_list[k][0]
             product_weight = self.product_weight_list[k]
@@ -36,8 +36,6 @@ class Diffusion:
                     if random.random() > i_dict[ii_node]:
                         continue
 
-                    if ii_node in s_total_set:
-                        continue
                     if ii_node in a_n_set:
                         continue
                     a_n_set.add(ii_node)
