@@ -55,11 +55,12 @@ class Evaluation:
 
 
 class EvaluationM:
-    def __init__(self, model_name, dataset_name, product_name, seed_cost_option, cascade_model):
+    def __init__(self, model_name, dataset_name, product_name, seed_cost_option, diff_seed_option, cascade_model):
         self.model_name = model_name
         self.dataset_name = dataset_name
         self.product_name = product_name
         self.seed_cost_option = seed_cost_option
+        self.diff_seed_option = diff_seed_option
         self.cascade_model = cascade_model
         self.eva_monte_carlo = 100
 
@@ -99,7 +100,8 @@ class EvaluationM:
         path = 'result/' + self.model_name + '_' + wallet_distribution_type
         if not os.path.isdir(path):
             os.mkdir(path)
-        fw = open(path + '/' + self.dataset_name + '_' + self.cascade_model + '_' + self.product_name + '_' + self.seed_cost_option + '_bi' + str(bi) + '.txt', 'w')
+        fw = open(path + '/' + self.dataset_name + '_' + self.cascade_model + '_' + self.product_name + '_' + self.seed_cost_option +
+                  '_ds' * self.diff_seed_option + '_bi' + str(bi) + '.txt', 'w')
         fw.write(self.model_name + ', ' + wallet_distribution_type + ', ' + self.dataset_name + '_' + self.cascade_model + ', ' + self.product_name +
                  ', seed_cost_option = ' + self.seed_cost_option + '\n\n' +
                  'total_budget = ' + str(total_budget) + '\n' +
