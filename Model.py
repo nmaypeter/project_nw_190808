@@ -570,7 +570,7 @@ class Model:
                                  str(now_budget) + '\t' + str([len(seed_set[k]) for k in range(num_product)]) + '\n')
 
                 if self.diff_seed_option:
-                    degree_heap = [degree_heap for celf_item in degree_heap if celf_item[2] != mep_i_node]
+                    degree_heap = [celf_item for celf_item in degree_heap if celf_item[2] != mep_i_node]
                     heap.heapify_max(degree_heap)
 
             ss_time = round(time.time() - ss_start_time + ss_acc_time, 4)
@@ -660,7 +660,7 @@ class Model:
                                  str(now_budget) + '\t' + str([len(seed_set[k]) for k in range(num_product)]) + '\n')
 
                 if self.diff_seed_option:
-                    random_node_list = [random_node_list for celf_item in random_node_list if celf_item[1] != mep_i_node]
+                    random_node_list = [celf_item for celf_item in random_node_list if celf_item[1] != mep_i_node]
 
             ss_time = round(time.time() - ss_start_time + ss_acc_time, 4)
             print('ss_time = ' + str(ss_time) + 'sec, cost = ' + str(now_budget) + ', seed_set_length = ' + str([len(s_set_k) for s_set_k in seed_set]))
