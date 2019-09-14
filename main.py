@@ -13,7 +13,7 @@ if __name__ == '__main__':
         for ds_option in ds_option_seq:
             diff_seed_option = False if ds_option == 1 else True
             for data_setting in dataset_seq:
-                dataset_name = 'toy2' * (data_setting == 1) + 'dnc_email' * (data_setting == 2) + \
+                dataset_name = 'email' * (data_setting == 1) + 'dnc_email' * (data_setting == 2) + \
                                'email_Eu_core' * (data_setting == 3) + 'NetHEPT' * (data_setting == 4)
                 for cm in cm_seq:
                     cascade_model = 'ic' * (cm == 1) + 'wc' * (cm == 2)
