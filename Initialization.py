@@ -80,6 +80,9 @@ class Initialization:
                 price_list.append(float(p))
         f.close()
 
+        max_price = max([price for price in price_list])
+        prod_list = [[round(detail / max_price, 4) for detail in item] for item in prod_list]
+
         pw_list = [1.0 for _ in range(len(price_list))]
         if self.wallet_dist_type in ['m50e25', 'm99e96']:
             mu, sigma = 0, 1
