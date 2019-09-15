@@ -43,7 +43,7 @@ class Model:
         self.diff_seed_option = diff_seed_option
         self.wallet_distribution_type = wallet_distribution_type
         self.wd_seq = ['m50e25', 'm99e96']
-        self.budget_iteration = [i for i in range(10, 5, -1)]
+        self.budget_iteration = [i for i in range(10, 6, -1)]
         self.monte_carlo = 100
 
     def model_mioa(self, r_flag, epw_flag=False):
