@@ -95,8 +95,11 @@ class IniWallet:
         with open(self.product_path) as f:
             for line in f:
                 (b, c, r, p) = line.split()
-                price_list.append(p)
+                price_list.append(float(p))
         f.close()
+        max_price = max([price for price in price_list])
+        price_list = [round(price / max_price, 4) for price in price_list]
+
         num_node = 0
         with open(self.data_data_path) as f:
             for line in f:
