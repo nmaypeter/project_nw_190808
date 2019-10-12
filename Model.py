@@ -46,7 +46,7 @@ class Model:
         self.budget_iteration = [i for i in range(10, 6, -1)]
         self.monte_carlo = 100
 
-    def model_mioa(self, r_flag, epw_flag=False):
+    def model_mioa(self, r_flag, d_flag=False, epw_flag=False):
         ini = Initialization(self.dataset_name, self.product_name, self.wallet_distribution_type)
         seed_cost_dict = ini.constructSeedCostDict(self.seed_cost_option)
         graph_dict = ini.constructGraphDict(self.cascade_model)
@@ -70,7 +70,7 @@ class Model:
         mioa_dict = ssmioa_model.generateMIOA()
         if epw_flag:
             mioa_dict = ssmioa_model.updateMIOAEPW(mioa_dict)
-        celf_heap = [(safe_div(sum(mioa_dict[k][i][j][0] for j in mioa_dict[k][i]) * product_list[k][0] * (1.0 if epw_flag else product_weight_list[k]), seed_cost_dict[k][i] if r_flag else 1.0), k, i, 0)
+        celf_heap = [(safe_div((sum(mioa_dict[k][i][j][0] for j in mioa_dict[k][i]) * product_list[k][0] - seed_cost_dict[k][i] * d_flag) * (1.0 if epw_flag else product_weight_list[k]), seed_cost_dict[k][i] if r_flag else 1.0), k, i, 0)
                      for k in range(num_product) for i in mioa_dict[k]]
         heap.heapify_max(celf_heap)
         generateHeapOrder(celf_heap, self.model_name, self.dataset_name, self.product_name, self.cascade_model, self.seed_cost_option, self.diff_seed_option, self.wallet_distribution_type)
@@ -119,7 +119,7 @@ class Model:
                 else:
                     seed_exp_mioa_dict = updateSeedMIOADict(copy.deepcopy(seed_mioa_dict), mep_k_prod, mep_i_node, seed_set, mioa_dict[mep_k_prod][mep_i_node])
                     expected_inf = calculateExpectedInf(seed_exp_mioa_dict)
-                    ep_t = sum(expected_inf[k] * product_list[k][0] * (1.0 if epw_flag else product_weight_list[k]) for k in range(num_product))
+                    ep_t = sum(expected_inf[k] * product_list[k][0] * (1.0 if epw_flag else product_weight_list[k]) for k in range(num_product)) - sc * d_flag
                     mg_t = round(ep_t - now_profit, 4)
                     if r_flag:
                         mg_t = safe_div(mg_t, sc)
@@ -159,7 +159,7 @@ class Model:
                 for wallet_distribution_type in self.wd_seq:
                     eva_model.evaluate(bi, wallet_distribution_type, seed_set_sequence[now_bi_index], ss_time_sequence[now_bi_index])
 
-    def model_dag1(self, r_flag, epw_flag=False):
+    def model_dag1(self, r_flag, d_flag=False, epw_flag=False):
         ini = Initialization(self.dataset_name, self.product_name, self.wallet_distribution_type)
         seed_cost_dict = ini.constructSeedCostDict(self.seed_cost_option)
         graph_dict = ini.constructGraphDict(self.cascade_model)
@@ -183,7 +183,7 @@ class Model:
         mioa_dict = ssmioa_model.generateMIOA()
         if epw_flag:
             mioa_dict = ssmioa_model.updateMIOAEPW(mioa_dict)
-        celf_heap = [(safe_div(sum(mioa_dict[k][i][j][0] for j in mioa_dict[k][i]) * product_list[k][0] * (1.0 if epw_flag else product_weight_list[k]), seed_cost_dict[k][i] if r_flag else 1.0), k, i, 0)
+        celf_heap = [(safe_div((sum(mioa_dict[k][i][j][0] for j in mioa_dict[k][i]) * product_list[k][0] - seed_cost_dict[k][i] * d_flag) * (1.0 if epw_flag else product_weight_list[k]), seed_cost_dict[k][i] if r_flag else 1.0), k, i, 0)
                      for k in range(num_product) for i in mioa_dict[k]]
         heap.heapify_max(celf_heap)
         mep_seed_dag_dict = (celf_heap[0][0], [{} for _ in range(num_product)])
@@ -240,7 +240,7 @@ class Model:
                     dag_k_dict = ssmioa_model.generateDAG1(seed_set_t)
                     seed_exp_dag_dict[mep_k_prod] = ssmioa_model.generateSeedDAGDict(dag_k_dict, seed_set_t)
                     expected_inf = calculateExpectedInf(seed_exp_dag_dict)
-                    ep_t = sum(expected_inf[k] * product_list[k][0] * (1.0 if epw_flag else product_weight_list[k]) for k in range(num_product))
+                    ep_t = sum(expected_inf[k] * product_list[k][0] * (1.0 if epw_flag else product_weight_list[k]) for k in range(num_product)) - sc * d_flag
                     mg_t = round(ep_t - now_profit, 4)
                     if r_flag:
                         mg_t = safe_div(mg_t, sc)
@@ -282,7 +282,7 @@ class Model:
                 for wallet_distribution_type in self.wd_seq:
                     eva_model.evaluate(bi, wallet_distribution_type, seed_set_sequence[now_bi_index], ss_time_sequence[now_bi_index])
 
-    def model_dag2(self, r_flag, epw_flag=False):
+    def model_dag2(self, r_flag, d_flag=False, epw_flag=False):
         ini = Initialization(self.dataset_name, self.product_name, self.wallet_distribution_type)
         seed_cost_dict = ini.constructSeedCostDict(self.seed_cost_option)
         graph_dict = ini.constructGraphDict(self.cascade_model)
@@ -306,7 +306,7 @@ class Model:
         mioa_dict = ssmioa_model.generateMIOA()
         if epw_flag:
             mioa_dict = ssmioa_model.updateMIOAEPW(mioa_dict)
-        celf_heap = [(safe_div(sum(mioa_dict[k][i][j][0] for j in mioa_dict[k][i]) * product_list[k][0] * (1.0 if epw_flag else product_weight_list[k]), seed_cost_dict[k][i] if r_flag else 1.0), k, i, 0)
+        celf_heap = [(safe_div((sum(mioa_dict[k][i][j][0] for j in mioa_dict[k][i]) * product_list[k][0] - seed_cost_dict[k][i] * d_flag) * (1.0 if epw_flag else product_weight_list[k]), seed_cost_dict[k][i] if r_flag else 1.0), k, i, 0)
                      for k in range(num_product) for i in mioa_dict[k]]
         heap.heapify_max(celf_heap)
         mep_seed_dag_dict = (celf_heap[0][0], [{} for _ in range(num_product)])
@@ -363,7 +363,7 @@ class Model:
                     dag_k_dict = ssmioa_model.generateDAG2(seed_set_t, {i: mioa_dict[mep_k_prod][i] for i in seed_set_t})
                     seed_exp_dag_dict[mep_k_prod] = ssmioa_model.generateSeedDAGDict(dag_k_dict, seed_set_t)
                     expected_inf = calculateExpectedInf(seed_exp_dag_dict)
-                    ep_t = sum(expected_inf[k] * product_list[k][0] * (1.0 if epw_flag else product_weight_list[k]) for k in range(num_product))
+                    ep_t = sum(expected_inf[k] * product_list[k][0] * (1.0 if epw_flag else product_weight_list[k]) for k in range(num_product)) - sc * d_flag
                     mg_t = round(ep_t - now_profit, 4)
                     if r_flag:
                         mg_t = safe_div(mg_t, sc)
@@ -405,7 +405,7 @@ class Model:
                 for wallet_distribution_type in self.wd_seq:
                     eva_model.evaluate(bi, wallet_distribution_type, seed_set_sequence[now_bi_index], ss_time_sequence[now_bi_index])
 
-    def model_ng(self, r_flag):
+    def model_ng(self, r_flag, d_flag=False):
         ini = Initialization(self.dataset_name, self.product_name, self.wallet_distribution_type)
         seed_cost_dict = ini.constructSeedCostDict(self.seed_cost_option)
         graph_dict = ini.constructGraphDict(self.cascade_model)
@@ -427,6 +427,8 @@ class Model:
 
         wd_seq = [self.wallet_distribution_type] if self.wallet_distribution_type else self.wd_seq
         celf_heap = ssng_model.generateCelfHeap()
+        if d_flag:
+            celf_heap = [(round(celf_item[0] - seed_cost_dict[celf_item[1]][celf_item[2]], 4), celf_item[1], celf_item[2], celf_item[3]) for celf_item in celf_heap]
         generateHeapOrder(celf_heap, self.model_name, self.dataset_name, self.product_name, self.cascade_model, self.seed_cost_option, self.diff_seed_option, self.wallet_distribution_type)
 
         ss_acc_time = round(time.time() - ss_start_time, 4)
@@ -472,7 +474,7 @@ class Model:
                 else:
                     seed_set_t = copy.deepcopy(seed_set)
                     seed_set_t[mep_k_prod].add(mep_i_node)
-                    ep_t = safe_div(sum([diff_model.getSeedSetProfit(seed_set_t) for _ in range(self.monte_carlo)]), self.monte_carlo)
+                    ep_t = safe_div(sum([diff_model.getSeedSetProfit(seed_set_t) for _ in range(self.monte_carlo)]), self.monte_carlo) - sc * d_flag
                     mg_t = round(ep_t - now_profit, 4)
                     if r_flag:
                         mg_t = safe_div(mg_t, sc)
