@@ -30,7 +30,6 @@ if __name__ == '__main__':
                         Model('mngr', dataset_name, product_name, cascade_model, seed_cost_option, diff_seed_option).model_ng(r_flag=True)
                         Model('mhd', dataset_name, product_name, cascade_model, seed_cost_option, diff_seed_option).model_hd()
                         Model('mr', dataset_name, product_name, cascade_model, seed_cost_option, diff_seed_option).model_r()
-                        # Model('mpmis', dataset_name, product_name, cascade_model, seed_cost_option, diff_seed_option).model_pmis()
 
                         for wd in wd_seq:
                             wallet_distribution_type = 'm50e25' * (wd == 1) + 'm99e96' * (wd == 2)
