@@ -23,10 +23,13 @@ class Initialization:
         # -- calculate the cost for each seed --
         ### seed_cost_dict[k][i]: (float4) the seed of i-node and k-item
         prod_cost_list = []
+        max_price = 0.0
         with open(self.product_path) as f:
             for line in f:
                 (b, c, r, p) = line.split()
                 prod_cost_list.append(float(c))
+                max_price = max(max_price, float(p))
+        prod_cost_list = [round(prod_cost / max_price, 4) for prod_cost in prod_cost_list]
         num_product = len(prod_cost_list)
 
         seed_cost_dict, deg_dict = [{} for _ in range(num_product)], {}
